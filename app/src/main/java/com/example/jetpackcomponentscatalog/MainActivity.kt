@@ -20,7 +20,7 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
-                ) { }
+                ) { LoginScreen() }
             }
         }
     }
@@ -30,5 +30,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     JetpackComponentsCatalogTheme {
+        LoginScreen()
     }
 }
