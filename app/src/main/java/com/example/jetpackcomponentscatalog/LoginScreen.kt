@@ -38,6 +38,7 @@ fun LoginScreen() {
             //.clickable { activity.finish() }
         )
         Body(Modifier.align(Alignment.Center))
+        Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
 
@@ -77,6 +78,35 @@ fun Body(modifier: Modifier) {
         LoginDivider()
         Spacer(modifier = Modifier.size(10.dp))
         FacebookLogin()
+    }
+}
+
+@Composable
+fun Footer(modifier: Modifier) {
+    Column(modifier = modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+        Divider(
+            modifier = Modifier
+                .height(1.dp)
+                .fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.size(24.dp))
+        SignUp()
+        Spacer(modifier = Modifier.size(12.dp))
+    }
+}
+
+@Composable
+fun SignUp() {
+    Row() {
+        Text(text = "Don't have an account?", fontSize = 12.sp)
+        Text(
+            text = "Sign up",
+            color = Color.Blue,
+            modifier = Modifier.padding(start = 6.dp),
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Text(text = ".", fontSize = 12.sp)
     }
 }
 
