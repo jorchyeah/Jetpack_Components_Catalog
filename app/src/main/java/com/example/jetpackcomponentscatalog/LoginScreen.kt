@@ -1,31 +1,33 @@
 package com.example.jetpackcomponentscatalog
 
+import android.app.Activity
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+val loginScreenViewModel = LoginScreenViewModel()
+
 @Composable
 fun LoginScreen() {
-    //val activity = LocalContext.current as Activity
+    val activity = LocalContext.current as Activity
 
     Box(
         Modifier
@@ -35,7 +37,7 @@ fun LoginScreen() {
         Header(
             Modifier
                 .align(Alignment.TopEnd)
-            //.clickable { activity.finish() }
+                .clickable { activity.finish() }
         )
         Body(Modifier.align(Alignment.Center))
         Footer(Modifier.align(Alignment.BottomCenter))
@@ -49,6 +51,8 @@ fun Header(modifier: Modifier) {
 
 @Composable
 fun Body(modifier: Modifier) {
+    val isEmailApproved = rememberSaveable { mutableStateOf(false) }
+    val isPasswordApproved = rememberSaveable { mutableStateOf(false) }
     Column(
         modifier = modifier,
     ) {
@@ -59,9 +63,9 @@ fun Body(modifier: Modifier) {
                 .size(180.dp)
                 .align(Alignment.CenterHorizontally)
         )
-        Email(Modifier.align(Alignment.CenterHorizontally))
+        Email(isEmailApproved, Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(4.dp))
-        Password(Modifier.align(Alignment.CenterHorizontally))
+        Password(isPasswordApproved, Modifier.align(Alignment.CenterHorizontally))
         Spacer(modifier = Modifier.size(8.dp))
         ForgotPassword(
             Modifier
@@ -70,6 +74,8 @@ fun Body(modifier: Modifier) {
         )
         Spacer(modifier = Modifier.size(20.dp))
         LoginButton(
+            isEmailApproved,
+            isPasswordApproved,
             Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth()
@@ -144,14 +150,23 @@ fun LoginDivider() {
 }
 
 @Composable
-fun LoginButton(modifier: Modifier) {
-    val enabledState = rememberSaveable { mutableStateOf(true) }
-    Button(onClick = { enabledState.value = false }, modifier = modifier, enabled = enabledState.value, colors = ButtonDefaults.buttonColors(
-        backgroundColor = Color(0xFF4EA8E9),
-        disabledBackgroundColor = Color(0xFF78C8F9),
-        contentColor = Color.White,
-        disabledContentColor = Color.White
-    )) {
+fun LoginButton(
+    isEmailApproved: MutableState<Boolean>,
+    isPasswordApproved: MutableState<Boolean>,
+    modifier: Modifier
+) {
+    rememberSaveable { mutableStateOf(false) }
+    Button(
+        onClick = {},
+        modifier = modifier,
+        enabled = loginScreenViewModel.enableLogin(isEmailApproved, isPasswordApproved),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(0xFF4EA8E9),
+            disabledBackgroundColor = Color(0xFF78C8F9),
+            contentColor = Color.White,
+            disabledContentColor = Color.White
+        )
+    ) {
         Text(text = "Login")
     }
 }
@@ -168,11 +183,14 @@ fun ForgotPassword(modifier: Modifier) {
 }
 
 @Composable
-fun Email(modifier: Modifier) {
-    val textState = rememberSaveable { mutableStateOf("") }
+fun Email(isEmailApproved: MutableState<Boolean>, modifier: Modifier) {
+    val email = rememberSaveable { mutableStateOf("") }
     TextField(
-        value = textState.value,
-        onValueChange = { textState.value = it },
+        value = email.value,
+        onValueChange = {
+            email.value = it
+            isEmailApproved.value = loginScreenViewModel.checkEmail(email)
+        },
         enabled = true,
         modifier = modifier.fillMaxWidth(),
         placeholder = { Text(text = "Phone number, username or email") },
@@ -190,12 +208,15 @@ fun Email(modifier: Modifier) {
 }
 
 @Composable
-fun Password(modifier: Modifier) {
-    val textState = rememberSaveable { mutableStateOf("") }
-    val passwordVisibilityState = rememberSaveable { mutableStateOf(false) }
+fun Password(isPasswordApproved: MutableState<Boolean>, modifier: Modifier) {
+    val password = rememberSaveable { mutableStateOf("") }
+    val passwordVisibility = rememberSaveable { mutableStateOf(false) }
     TextField(
-        value = textState.value,
-        onValueChange = { textState.value = it },
+        value = password.value,
+        onValueChange = {
+            password.value = it
+            isPasswordApproved.value = loginScreenViewModel.checkPassword(password)
+        },
         enabled = true,
         modifier = modifier.fillMaxWidth(),
         placeholder = { Text(text = "Password") },
@@ -210,21 +231,11 @@ fun Password(modifier: Modifier) {
             unfocusedIndicatorColor = Color.Transparent
         ),
         trailingIcon = {
-            val imagen = if (passwordVisibilityState.value) {
-                Icons.Filled.VisibilityOff
-            } else {
-                Icons.Filled.Visibility
-            }
-            IconButton(onClick = {
-                passwordVisibilityState.value = !passwordVisibilityState.value
-            }) {
+            val imagen = loginScreenViewModel.setIconVisibility(passwordVisibility)
+            IconButton(onClick = { passwordVisibility.value = !passwordVisibility.value }) {
                 Icon(imageVector = imagen, contentDescription = "Visibility icon")
             }
         },
-        visualTransformation = if (passwordVisibilityState.value) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        }
+        visualTransformation = loginScreenViewModel.setPasswordVisibility(passwordVisibility)
     )
 }
