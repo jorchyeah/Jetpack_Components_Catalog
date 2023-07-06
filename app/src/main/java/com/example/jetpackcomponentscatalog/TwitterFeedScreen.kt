@@ -1,20 +1,28 @@
 package com.example.jetpackcomponentscatalog
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Divider
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+val twitterFeedViewModel = TwitterFeedViewModel()
 
 @Composable
 fun TwitterFeedScreen() {
@@ -25,6 +33,7 @@ fun TwitterFeedScreen() {
     ) {
         Header()
         Body()
+        Footer()
     }
 }
 
@@ -44,6 +53,63 @@ fun Header() {
 fun Body() {
     TweetContent()
     TweetImage()
+}
+
+@Composable
+fun Footer() {
+    val isChatIconClicked = remember {
+        Triple(
+            "chatIcon",
+            mutableStateOf(false),
+            mutableStateOf(R.drawable.ic_chat)
+        )
+    }
+    val isRetweetIconClicked = remember {
+        Triple(
+            "retweetIcon",
+            mutableStateOf(false),
+            mutableStateOf(R.drawable.ic_rt)
+        )
+    }
+    val isLikeIconClicked = remember {
+        Triple(
+            "likeIcon",
+            mutableStateOf(false),
+            mutableStateOf(R.drawable.ic_like)
+        )
+    }
+    Column() {
+        Row(modifier = Modifier.padding(top = 300.dp, start = 70.dp)) {
+            TweetIcons(isChatIconClicked, 49)
+            Spacer(modifier = Modifier.padding(start = 50.dp))
+            TweetIcons(isRetweetIconClicked, 20)
+            Spacer(modifier = Modifier.padding(start = 50.dp))
+            TweetIcons(isLikeIconClicked, 100)
+        }
+        Divider(modifier = Modifier.padding(top = 10.dp), thickness = 2.dp)
+    }
+}
+
+@Composable
+fun TweetIcons(
+    iconClicked: Triple<String, MutableState<Boolean>, MutableState<Int>>,
+    clicks: Int
+) {
+    val color = remember { mutableStateOf(Color.Black) }
+    val counter = remember { mutableStateOf(clicks) }
+    Row(modifier = Modifier.clickable {
+        iconClicked.second.value = !iconClicked.second.value
+        twitterFeedViewModel.iconChooser(iconClicked)
+        counter.value = twitterFeedViewModel.clickCounter(clicks, iconClicked)
+        color.value = twitterFeedViewModel.colorChooser(iconClicked)
+    }) {
+        Icon(
+            painter = painterResource(id = iconClicked.third.value),
+            contentDescription = iconClicked.first,
+            tint = color.value
+        )
+        Text(text = counter.value.toString())
+    }
 }
 
 @Composable
