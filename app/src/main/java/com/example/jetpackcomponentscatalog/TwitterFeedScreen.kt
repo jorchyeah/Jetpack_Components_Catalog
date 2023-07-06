@@ -12,6 +12,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -23,6 +24,7 @@ fun TwitterFeedScreen() {
             .padding(15.dp)
     ) {
         Header()
+        Body()
     }
 }
 
@@ -38,7 +40,33 @@ fun Header() {
     }
 }
 
+@Composable
+fun Body() {
+    TweetContent()
+    TweetImage()
+}
 
+@Composable
+fun TweetImage() {
+    Image(
+        painter = painterResource(id = R.drawable.img_wolf),
+        contentDescription = "Tweet Image",
+        modifier = Modifier
+            .size(300.dp)
+            .padding(top = 120.dp, start = 70.dp),
+        contentScale = ContentScale.FillWidth
+    )
+}
+
+@Composable
+fun TweetContent() {
+    Box(modifier = Modifier.padding(start = 70.dp, top = 30.dp, end = 35.dp)) {
+        Text(
+            text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            textAlign = TextAlign.Justify
+        )
+    }
+}
 
 @Composable
 fun UserTitle() {
