@@ -9,6 +9,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -27,46 +28,59 @@ fun MyRecyclerView() {
     LazyRow {
         starters.forEach { starter ->
             item {
-                Card(
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(280.dp)
-                        .padding(8.dp)
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Image(
-                            painter = painterResource(id = starter.image),
-                            contentDescription = starter.name,
-                            alignment = Alignment.Center
-                        )
-                        Text(text = starter.number.toString())
-                        Text(text = starter.name.uppercase())
-                        Row {
-                            Button(
-                                onClick = { },
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color(starter.type1.color),
-                                    contentColor = Color.White
-                                )
-                            ) {
-                                Text(text = starter.type1.toString())
-                            }
-                            Spacer(modifier = Modifier.size(10.dp))
-                            if (starter.type2 != null) {
-                                Button(
-                                    onClick = { },
-                                    colors = ButtonDefaults.buttonColors(
-                                        backgroundColor = Color(starter.type2.color),
-                                        contentColor = Color.White
-                                    )
-                                ) {
-                                    Text(text = starter.type2.toString())
-                                }
-                            }
-                        }
-                    }
-                }
+                PokemonCard(starter)
             }
         }
     }
 }
+
+@Composable
+fun PokemonCard(starter: Pokemon) {
+    Card(
+        modifier = Modifier
+            .width(200.dp)
+            .height(280.dp)
+            .padding(8.dp)
+    ) {
+        PokemonInfo(starter)
+    }
+}
+
+@Composable
+fun PokemonInfo(pokemon: Pokemon) {
+    Column(horizontalAlignment = CenterHorizontally) {
+        Image(
+            painter = painterResource(id = pokemon.image),
+            contentDescription = pokemon.name,
+            alignment = Alignment.Center
+        )
+        Text(text = pokemon.number.toString())
+        Text(text = pokemon.name.uppercase())
+        TypesRow(pokemon)
+    }
+}
+
+@Composable
+fun TypesRow(pokemon: Pokemon) {
+    Row {
+        TypeButton(pokemon.type1)
+        Spacer(modifier = Modifier.size(10.dp))
+        if (pokemon.type2 != null) {
+            TypeButton(pokemon.type2)
+        }
+    }
+}
+
+@Composable
+fun TypeButton(type: PokemonTypes) {
+    Button(
+        onClick = { },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(type.color),
+            contentColor = Color.White
+        )
+    ) {
+        Text(text = type.toString())
+    }
+}
+
