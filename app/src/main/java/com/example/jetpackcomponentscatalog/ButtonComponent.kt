@@ -52,13 +52,15 @@ fun MyLikeButton() {
 @Composable
 fun MyExtendedLikeButton() {
     ExtendedFloatingActionButton(
-        onClick = { /* ... */ },
+        onClick = { },
+        backgroundColor = Color.Yellow,
+        contentColor = Color.Black,
+        text = { Text("Like") },
         icon = {
             Icon(
                 Icons.Filled.Favorite,
                 contentDescription = "Favorite"
             )
         },
-        text = { Text("Like") }
     )
 }
