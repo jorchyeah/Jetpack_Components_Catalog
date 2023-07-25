@@ -1,4 +1,4 @@
-package com.example.jetpackcomponentscatalog
+package com.example.jetpackcomponentscatalog.compose
 
 import android.util.Log
 import androidx.compose.foundation.layout.*
