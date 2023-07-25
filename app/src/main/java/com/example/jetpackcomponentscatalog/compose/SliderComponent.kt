@@ -1,5 +1,6 @@
-package com.example.jetpackcomponentscatalog
+package com.example.jetpackcomponentscatalog.compose
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Slider
@@ -13,9 +14,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MySlider() {
-    val state = rememberSaveable { mutableStateOf(0f) }
-    Column(Modifier.padding(20.dp)) {
-        Slider(value = state.value, onValueChange = { state.value = it }, steps = 9)
-        Text(text = state.value.toString(), modifier = Modifier.align(CenterHorizontally))
+    Box {
+        val state = rememberSaveable { mutableStateOf(0f) }
+        Column(Modifier.padding(20.dp)) {
+            Slider(value = state.value, onValueChange = { state.value = it }, steps = 9)
+            Text(text = state.value.toString(), modifier = Modifier.align(CenterHorizontally))
+        }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.jetpackcomponentscatalog
+package com.example.jetpackcomponentscatalog.compose
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 
 @Composable
 fun MyDialogSetup(show: MutableState<Boolean>) {
@@ -42,13 +41,5 @@ fun MyAlertDialog(onDismiss: () -> Unit) {
         confirmButton = { Button(onClick = { onDismiss() }, content = { Text("Ok") }) },
         dismissButton = { Button(onClick = { onDismiss() }, content = { Text("Deny") }) }
     )
-}
-
-
-@Composable
-fun MyCustomDialog() {
-    Dialog(onDismissRequest = { }) {
-
-    }
 }
 
